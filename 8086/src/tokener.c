@@ -334,7 +334,7 @@ Byte token_names[][16] = {
 	"std"
 };
 
-
+/*
 void print_token(Token token)
 {
 	if(token < 256) {
@@ -348,7 +348,7 @@ void print_token(Token token)
 			print_error("%s", token_names[token - 256]);
 		}
 	}
-}
+}*/
 
 
 Token read_next_token()
@@ -453,13 +453,6 @@ Token read_next_token()
 						break;
 					}
 					else if(head_character == '\\') {
-						/*head_character = file_head();
-						file_next();
-						
-						if(end_of_stream) {
-							error(line_number, "end in \"");
-						}*/
-
 						next(&stdin, 1);
 
 						if(peek_bytes(&stdin, &head_character, sizeof(head_character)) != sizeof(head_character)) {

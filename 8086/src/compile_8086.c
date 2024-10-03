@@ -11,6 +11,7 @@
 Number main()
 {
 	Dynamic_Stack program;
+	Number current_size;
 
 	initialize_dynamic_stack(&links, 512);
 	initialize_dynamic_stack(&program, 512);
@@ -20,18 +21,11 @@ Number main()
 	out = &out_number_of_bytes_in_current_address;
 	generate(&program);
 
-	Number current_size = current_address;
-
-	for(;;) {
+	do {
+		current_size = current_address;
 		generate(&program);
-		
-		if(current_address < current_size) {
-			current_size = current_address;
-			continue;
-		}
-
-		break;
 	}
+	while(current_address < current_size);
 
 	out = &out_bytes_in_stdout;
 	generate(&program);
