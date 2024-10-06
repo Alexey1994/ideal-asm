@@ -243,7 +243,7 @@ Byte token_names[][16] = {
 	"jc",
 	"jnc",
 	"jz",
-	"jna",
+	"jnz",
 	"jna",
 	"ja",
 	"js",

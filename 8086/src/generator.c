@@ -55,6 +55,34 @@ Node* calculate_Mem_Node(Mem_Node* node, Node* expression)
 			return expression;
 		}
 
+		case NAME_TOKEN: {
+			Name_Link_Node* n = expression;
+
+			if(!n->link) {
+				n->link = find_link(n->link_name);
+			}
+
+			if(!n->link) {
+				if(out == &out_bytes_in_stdout) {
+					error(n->line_number, "link %s not found", n->link_name);
+				}
+
+				Number_Node* new_node = create_node(sizeof(Number_Node));
+				new_node->token = CALCULATED_NUMBER_TOKEN;
+				new_node->line_number = n->line_number;
+				new_node->value = 0xFFFFFFFF; //TODO: better infinite definition
+
+				return new_node;
+			}
+
+			Number_Node* new_node = create_node(sizeof(Number_Node));
+			new_node->token = CALCULATED_NUMBER_TOKEN;
+			new_node->line_number = n->line_number;
+			new_node->value = n->link->address;
+
+			return new_node;
+		}
+
 		case REG16_TOKEN: {
 			Reg16_Node* n = expression;
 
