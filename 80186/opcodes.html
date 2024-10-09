@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+
+	<style>
+		* {
+			font-family: monospace;
+		}
+
+		table {
+			border-spacing: 0;
+		}
+
+		table td {
+			padding: 0 10px;
+			text-align: center;
+			white-space: nowrap;
+			border-bottom: 1px solid #000;
+			border-right: 1px solid #000;
+		}
+	</style>
+</head>
+<body>
+	<table>
+		<tr>
+			<td></td>
+
+			<td>00</td>
+			<td>01</td>
+			<td>02</td>
+			<td>03</td>
+
+			<td>04</td>
+			<td>05</td>
+			<td>06</td>
+			<td>07</td>
+
+			<td>08</td>
+			<td>09</td>
+			<td>0A</td>
+			<td>0B</td>
+
+			<td>0C</td>
+			<td>0D</td>
+			<td>0E</td>
+			<td>0F</td>
+
+			<td></td>
+		</tr>
+
+		<tr>
+			<td>00</td>
+
+			<td>add m8 r8</td>
+			<td>add m16 r16</td>
+			<td>add r8 m8</td>
+			<td>add r16 m16</td>
+
+			<td>add AL imm8</td>
+			<td>add AX imm16</td>
+			<td>push ES</td>
+			<td>pop ES</td>
+
+			<td>or m8 r8</td>
+			<td>or m16 r16</td>
+			<td>or r8 m8</td>
+			<td>or r16 m16</td>
+
+			<td>or AL imm8</td>
+			<td>or AX imm16</td>
+			<td>push CS</td>
+			<td>pop CS</td>
+
+			<td>00</td>
+		</tr>
+
+		<tr>
+			<td>10</td>
+
+			<td>adc m8 r8</td>
+			<td>adc m16 r16</td>
+			<td>adc r8 m8</td>
+			<td>adc r16 m16</td>
+
+			<td>adc AL imm8</td>
+			<td>adc AX imm16</td>
+			<td>push SS</td>
+			<td>pop SS</td>
+
+			<td>sbb m8 r8</td>
+			<td>sbb m16 r16</td>
+			<td>sbb r8 m8</td>
+			<td>sbb r16 m16</td>
+
+			<td>sbb AL imm8</td>
+			<td>sbb AX imm16</td>
+			<td>push DS</td>
+			<td>pop DS</td>
+
+			<td>10</td>
+		</tr>
+
+		<tr>
+			<td>20</td>
+
+			<td>and m8 r8</td>
+			<td>and m16 r16</td>
+			<td>and r8 m8</td>
+			<td>and r16 m16</td>
+
+			<td>and AL imm8</td>
+			<td>and AX imm16</td>
+			<td>ES:</td>
+			<td>daa</td>
+
+			<td>sub m8 r8</td>
+			<td>sub m16 r16</td>
+			<td>sub r8 m8</td>
+			<td>sub r16 m16</td>
+
+			<td>sub AL imm8</td>
+			<td>sub AX imm16</td>
+			<td>CS:</td>
+			<td>das</td>
+
+			<td>20</td>
+		</tr>
+
+		<tr>
+			<td>30</td>
+
+			<td>xor m8 r8</td>
+			<td>xor m16 r16</td>
+			<td>xor r8 m8</td>
+			<td>xor r16 m16</td>
+
+			<td>xor AL imm8</td>
+			<td>xor AX imm16</td>
+			<td>SS:</td>
+			<td>aaa</td>
+
+			<td>cmp m8 r8</td>
+			<td>cmp m16 r16</td>
+			<td>cmp r8 m8</td>
+			<td>cmp r16 m16</td>
+
+			<td>cmp AL imm8</td>
+			<td>cmp AX imm16</td>
+			<td>DS:</td>
+			<td>aas</td>
+
+			<td>30</td>
+		</tr>
+
+
+		<tr>
+			<td>40</td>
+
+			<td>inc AX</td>
+			<td>inc CX</td>
+			<td>inc DX</td>
+			<td>inc BX</td>
+
+			<td>inc SP</td>
+			<td>inc BP</td>
+			<td>inc SI</td>
+			<td>inc DI</td>
+
+			<td>dec AX</td>
+			<td>dec CX</td>
+			<td>dec DX</td>
+			<td>dec BX</td>
+
+			<td>dec SP</td>
+			<td>dec BP</td>
+			<td>dec SI</td>
+			<td>dec DI</td>
+
+			<td>40</td>
+		</tr>
+
+		<tr>
+			<td>50</td>
+
+			<td>push AX</td>
+			<td>push CX</td>
+			<td>push DX</td>
+			<td>push BX</td>
+
+			<td>push SP</td>
+			<td>push BP</td>
+			<td>push SI</td>
+			<td>push DI</td>
+
+			<td>pop AX</td>
+			<td>pop CX</td>
+			<td>pop DX</td>
+			<td>pop BX</td>
+
+			<td>pop SP</td>
+			<td>pop BP</td>
+			<td>pop SI</td>
+			<td>pop DI</td>
+
+			<td>50</td>
+		</tr>
+
+		<tr>
+			<td>60</td>
+
+			<td>pusha</td>
+			<td>popa</td>
+			<td>bound r16 m16</td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>push imm16</td>
+			<td>imul r16 m16 imm16</td>
+			<td>push imm8</td>
+			<td>imul r16 m16 imm8</td>
+
+			<td>insb</td>
+			<td>insw</td>
+			<td>outsb</td>
+			<td>outsw</td>
+
+			<td>60</td>
+		</tr>
+
+		<tr>
+			<td>70</td>
+
+			<td>jo rel8</td>
+			<td>jno rel8</td>
+			<td>jc rel8</td>
+			<td>jnc rel8</td>
+
+			<td>jz rel8</td>
+			<td>jnz rel8</td>
+			<td>jna rel8</td>
+			<td>ja rel8</td>
+
+			<td>js rel8</td>
+			<td>jns rel8</td>
+			<td>jp rel8</td>
+			<td>jnp rel8</td>
+
+			<td>jl rel8</td>
+			<td>jnl rel8</td>
+			<td>jle rel8</td>
+			<td>jnle rel8</td>
+
+			<td>70</td>
+		</tr>
+
+		<tr>
+			<td>80</td>
+
+			<td>*1 m8 imm8</td>
+			<td>*1 m16 imm16</td>
+			<td>*1 m8 imm8</td>
+			<td>*1 m16 imm8</td>
+
+			<td>test m8 r8</td>
+			<td>test m16 r16</td>
+			<td>xchg m8 r8</td>
+			<td>xchg m16 r16</td>
+
+			<td>mov m8 r8</td>
+			<td>mov m16 r16</td>
+			<td>mov r8 m8</td>
+			<td>mov r16 m16</td>
+
+			<td>mov m16 s16</td>
+			<td>lea r16 m</td>
+			<td>mov s16 m16</td>
+			<td>pop m16</td>
+
+			<td>80</td>
+		</tr>
+
+		<tr>
+			<td>90</td>
+
+			<td>xchg AX AX</td>
+			<td>xchg AX CX</td>
+			<td>xchg AX DX</td>
+			<td>xchg AX BX</td>
+
+			<td>xchg AX SP</td>
+			<td>xchg AX BP</td>
+			<td>xchg AX SI</td>
+			<td>xchg AX DI</td>
+
+			<td>cbw</td>
+			<td>cwd</td>
+			<td>call imm16:imm16</td>
+			<td>wait</td>
+
+			<td>pushf</td>
+			<td>popf</td>
+			<td>sahf</td>
+			<td>lahf</td>
+
+			<td>90</td>
+		</tr>
+
+		<tr>
+			<td>A0</td>
+
+			<td>mov AL [imm16]</td>
+			<td>mov AX [imm16]</td>
+			<td>mov [imm16] AL</td>
+			<td>mov [imm16] AX</td>
+
+			<td>movsb</td>
+			<td>movsw</td>
+			<td>cmpsb</td>
+			<td>cmpsw</td>
+
+			<td>test AL imm8</td>
+			<td>test AX imm16</td>
+			<td>stosb</td>
+			<td>stosw</td>
+
+			<td>lodsb</td>
+			<td>lodsw</td>
+			<td>scasb</td>
+			<td>scasw</td>
+
+			<td>A0</td>
+		</tr>
+
+		<tr>
+			<td>B0</td>
+
+			<td>mov AL imm8</td>
+			<td>mov CL imm8</td>
+			<td>mov DL imm8</td>
+			<td>mov BL imm8</td>
+
+			<td>mov AH imm8</td>
+			<td>mov CH imm8</td>
+			<td>mov DH imm8</td>
+			<td>mov BH imm8</td>
+
+			<td>mov AX imm16</td>
+			<td>mov CX imm16</td>
+			<td>mov DX imm16</td>
+			<td>mov BX imm16</td>
+
+			<td>mov SP imm16</td>
+			<td>mov BP imm16</td>
+			<td>mov SI imm16</td>
+			<td>mov DI imm16</td>
+
+			<td>B0</td>
+		</tr>
+
+		<tr>
+			<td>C0</td>
+
+			<td>*2 m8 imm8</td>
+			<td>*2 m16 imm8</td>
+			<td>retn imm16</td>
+			<td>ret</td>
+
+			<td>les r16 m</td>
+			<td>lds r16 m</td>
+			<td>mov m8 imm8</td>
+			<td>mov m16 imm16</td>
+
+			<td>enter imm16 imm8</td>
+			<td>leave</td>
+			<td>retf imm16</td>
+			<td>retf</td>
+
+			<td>int3</td>
+			<td>int imm8</td>
+			<td>into</td>
+			<td>iret</td>
+
+			<td>C0</td>
+		</tr>
+
+		<tr>
+			<td>D0</td>
+
+			<td>*2 m8 1</td>
+			<td>*2 m16 1</td>
+			<td>*2 m8 CL</td>
+			<td>*2 m16 CL</td>
+
+			<td>aam imm8</td>
+			<td>aad imm8</td>
+			<td>salc</td>
+			<td>xlat</td>
+
+			<td>esc0</td>
+			<td>esc1</td>
+			<td>esc2</td>
+			<td>esc3</td>
+
+			<td>esc4</td>
+			<td>esc5</td>
+			<td>esc6</td>
+			<td>esc7</td>
+
+			<td>D0</td>
+		</tr>
+
+		<tr>
+			<td>E0</td>
+
+			<td>loopnz rel8</td>
+			<td>loopz rel8</td>
+			<td>loop rel8</td>
+			<td>jcxz rel8</td>
+
+			<td>in AL imm8</td>
+			<td>in AX imm8</td>
+			<td>out imm8 AL</td>
+			<td>out imm8 AX</td>
+
+			<td>call rel16</td>
+			<td>jmp rel16</td>
+			<td>jmp imm16:imm16</td>
+			<td>jmp rel8</td>
+
+			<td>in AL DX</td>
+			<td>in AX DX</td>
+			<td>out DX AL</td>
+			<td>out DX AX</td>
+
+			<td>E0</td>
+		</tr>
+
+		<tr>
+			<td>F0</td>
+
+			<td>lock</td>
+			<td>int1</td>
+			<td>repne</td>
+			<td>rep</td>
+
+			<td>hlt</td>
+			<td>cmc</td>
+			<td>*3 m8</td>
+			<td>*3 m16</td>
+
+			<td>clc</td>
+			<td>stc</td>
+			<td>cli</td>
+			<td>sti</td>
+
+			<td>cld</td>
+			<td>std</td>
+			<td>*4 m8</td>
+			<td>*4 m16</td>
+
+			<td>F0</td>
+		</tr>
+	</table>
+
+	<p>*1 add, or, adc, sbb, and, sub, xor, cmp</p>
+	<p>*2 rol, ror, rcl, rcr, shl, shr, sal, sar</p>
+	<p>*3 test, test, not, neg, mul, imul, div, idiv</p>
+	<p>*4 inc, dec, call, callf, jmp, jmpf, push</p>
+	<p>esc0-7 FPU</p>
+</body>
+</html>

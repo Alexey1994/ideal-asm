@@ -1124,6 +1124,20 @@ void generate(Dynamic_Stack* program)
 				Node* calculated_operand = calculate_expression(n->operand);
 
 				switch(calculated_operand->token) {
+					case NUMBER_TOKEN:
+					case CALCULATED_NUMBER_TOKEN: {
+						Number_Node* operand = calculated_operand;
+
+						if(operand->value < 256) {
+							out(2, 0x6A, operand->value);
+						}
+						else {
+							out(3, 0x68, operand->value, operand->value >> 8);
+						}
+
+						break;
+					}
+
 					case REG16_TOKEN: {
 						Reg16_Node* operand = calculated_operand;
 						out(1, 0x50 + operand->index);
@@ -1816,7 +1830,7 @@ void generate(Dynamic_Stack* program)
 			case NOT_TOKEN:
 			case NEG_TOKEN:
 			case MUL_TOKEN:
-			case IMUL_TOKEN:
+			//case IMUL_TOKEN:
 			case DIV_TOKEN:
 			case IDIV_TOKEN: {
 				Unary_Operation_Node* n = node;
@@ -1876,6 +1890,105 @@ void generate(Dynamic_Stack* program)
 				break;
 			}
 
+			case IMUL_TOKEN: {
+				Imul_Node* n = node;
+
+				if(n->destination_operand) {
+					Node* calculated_left_operand = calculate_expression(n->left_operand);
+					Node* calculated_destination_operand = calculate_expression(n->destination_operand);
+					Node* calculated_right_operand = calculate_expression(n->right_operand);
+
+					if(calculated_left_operand->token != REG16_TOKEN) {
+						error(n->left_operand->line_number, "not supported left operand");
+					}
+
+					if(calculated_destination_operand->token != MEM_TOKEN) {
+						error(n->left_operand->line_number, "not supported destination operand");
+					}
+
+					if(calculated_right_operand->token != NUMBER_TOKEN && calculated_right_operand->token != CALCULATED_NUMBER_TOKEN) {
+						error(n->left_operand->line_number, "not supported right operand");
+					}
+
+					Reg16_Node* left_operand = calculated_left_operand;
+					Mem_Node* destination_operand = calculated_destination_operand;
+					Number_Node* right_operand = calculated_right_operand;
+
+					if(right_operand->value < 256) {
+						generate_segment_prefix(destination_operand);
+						out(1, 0x6B);
+						generate_mem(destination_operand, left_operand->index);
+						out(1, right_operand->value);
+					}
+					else {
+						generate_segment_prefix(destination_operand);
+						out(1, 0x69);
+						generate_mem(destination_operand, left_operand->index);
+						out(2, right_operand->value, right_operand->value >> 8);
+					}
+
+					if(calculated_right_operand->token == CALCULATED_NUMBER_TOKEN) {
+						free_memory(calculated_right_operand);
+					}
+				}
+				else {
+					Node* calculated_operand = calculate_expression(n->left_operand);
+					Number operation_index = node->token - NOT_TOKEN + 2;
+
+					switch(calculated_operand->token) {
+						case REG8_TOKEN: {
+							Reg8_Node* operand = calculated_operand;
+							out(2, 0xF6, 0xC0 + (operation_index << 3) | operand->index);
+							break;
+						}
+
+						case REG16_TOKEN: {
+							Reg16_Node* operand = calculated_operand;
+							out(2, 0xF7, 0xC0 + (operation_index << 3) | operand->index);
+							break;
+						}
+
+						case MEM_TOKEN: {
+							Mem_Node* operand = calculated_operand;
+
+							switch(operand->size) {
+								case 8: {
+									generate_segment_prefix(operand);
+									out(1, 0xF6);
+									generate_mem(operand, operation_index);
+
+									break;
+								}
+
+								case 16: {
+									generate_segment_prefix(operand);
+									out(1, 0xF7);
+									generate_mem(operand, operation_index);
+
+									break;
+								}
+
+								default: {
+									error(n->left_operand->line_number, "undefined operand size");
+								}
+							}
+
+							break;
+						}
+
+						default: {
+							error(n->left_operand->line_number, "not supported operand");
+						}
+					}
+
+					if(calculated_operand->token == CALCULATED_NUMBER_TOKEN) {
+						free_memory(calculated_operand);
+					}
+				}
+
+				break;
+			}
+
 			case ROL_TOKEN:
 			case ROR_TOKEN:
 			case RCL_TOKEN:
@@ -1902,8 +2015,7 @@ void generate(Dynamic_Stack* program)
 									out(2, 0xD0, (3 << 6) | (operation_index << 3) | left_operand->index);
 								}
 								else {
-									//out(3, 0xC0, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
-									error(n->right_operand->line_number, "unsupported right operand, use only 1");
+									out(3, 0xC0, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 								}
 
 								break;
@@ -1941,8 +2053,7 @@ void generate(Dynamic_Stack* program)
 									out(2, 0xD1, (3 << 6) | (operation_index << 3) | left_operand->index);
 								}
 								else {
-									//out(3, 0xC1, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
-									error(n->right_operand->line_number, "unsupported right operand, use only 1");
+									out(3, 0xC1, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 								}
 
 								break;
@@ -1984,11 +2095,10 @@ void generate(Dynamic_Stack* program)
 											generate_mem(left_operand, operation_index);
 										}
 										else {
-											//generate_segment_prefix(left_operand);
-											//out(1, 0xC0);
-											//generate_mem(left_operand, operation_index);
-											//out(1, right_operand->value);
-											error(n->right_operand->line_number, "unsupported right operand, use only 1");
+											generate_segment_prefix(left_operand);
+											out(1, 0xC0);
+											generate_mem(left_operand, operation_index);
+											out(1, right_operand->value);
 										}
 										
 										break;
@@ -2001,11 +2111,10 @@ void generate(Dynamic_Stack* program)
 											generate_mem(left_operand, operation_index);
 										}
 										else {
-											//generate_segment_prefix(left_operand);
-											//out(1, 0xC1);
-											//generate_mem(left_operand, operation_index);
-											//out(1, right_operand->value);
-											error(n->right_operand->line_number, "unsupported right operand, use only 1");
+											generate_segment_prefix(left_operand);
+											out(1, 0xC1);
+											generate_mem(left_operand, operation_index);
+											out(1, right_operand->value);
 										}
 
 										break;
@@ -2569,6 +2678,114 @@ void generate(Dynamic_Stack* program)
 
 			case STD_TOKEN: {
 				out(1, 0xFD);
+				break;
+			}
+
+			case PUSHA_TOKEN: {
+				out(1, 0x60);
+				break;
+			}
+			
+			case POPA_TOKEN: {
+				out(1, 0x61);
+				break;
+			}
+
+			case BOUND_TOKEN: {
+				Binary_Operation_Node* n = node;
+				Node* calculated_left_operand = calculate_expression(n->left_operand);
+				Node* calculated_right_operand = calculate_expression(n->right_operand);
+				Number operation_index = node->token - ADD_TOKEN;
+
+				switch(calculated_left_operand->token) {
+					case REG16_TOKEN: {
+						Reg16_Node* left_operand = calculated_left_operand;
+
+						switch(calculated_right_operand->token) {
+							case MEM_TOKEN: {
+								generate_segment_prefix(calculated_right_operand);
+								out(1, 0x62);
+								generate_mem(calculated_right_operand, left_operand->index);
+
+								break;
+							}
+
+							default: {
+								error(n->right_operand->line_number, "not supported right operand");
+							}
+						}
+
+						break;
+					}
+
+					default: {
+						error(n->left_operand->line_number, "not supported left operand");
+					}
+				}
+				/*
+				if(calculated_left_operand->token == CALCULATED_NUMBER_TOKEN) {
+					free_memory(calculated_left_operand);
+				}
+
+				if(calculated_right_operand->token == CALCULATED_NUMBER_TOKEN) {
+					free_memory(calculated_right_operand);
+				}*/
+
+				break;
+			}
+
+			case INSB_TOKEN: {
+				out(1, 0x6C);
+				break;
+			}
+
+			case INSW_TOKEN: {
+				out(1, 0x6D);
+				break;
+			}
+
+			case OUTSB_TOKEN: {
+				out(1, 0x6E);
+				break;
+			}
+
+			case OUTSW_TOKEN: {
+				out(1, 0x6F);
+				break;
+			}
+
+			case ENTER_TOKEN: {
+				Binary_Operation_Node* n = node;
+
+				Node* calculated_left_operand = calculate_expression(n->left_operand);
+				Node* calculated_right_operand = calculate_expression(n->right_operand);
+
+					if(calculated_left_operand->token != NUMBER_TOKEN && calculated_left_operand->token != CALCULATED_NUMBER_TOKEN) {
+						error(n->left_operand->line_number, "not supported left operand");
+					}
+
+					if(calculated_right_operand->token != NUMBER_TOKEN && calculated_right_operand->token != CALCULATED_NUMBER_TOKEN) {
+						error(n->left_operand->line_number, "not supported right operand");
+					}
+
+					Number_Node* left_operand = calculated_left_operand;
+					Number_Node* right_operand = calculated_right_operand;
+
+					out(4, 0xC8, left_operand->value, left_operand->value >> 8, right_operand->value);
+
+					if(calculated_left_operand->token == CALCULATED_NUMBER_TOKEN) {
+						free_memory(calculated_left_operand);
+					}
+
+					if(calculated_right_operand->token == CALCULATED_NUMBER_TOKEN) {
+						free_memory(calculated_right_operand);
+					}
+
+				break;
+			}
+
+			case LEAVE_TOKEN: {
+				out(1, 0xC9);
 				break;
 			}
 
