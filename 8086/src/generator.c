@@ -1709,6 +1709,16 @@ void generate(Dynamic_Stack* program)
 								break;
 							}
 
+							case REG8_TOKEN: {
+								Reg8_Node* right_operand = calculated_right_operand;
+
+								generate_segment_prefix(left_operand);
+								out(1, 0x88);
+								generate_mem(left_operand, right_operand->index);
+
+								break;
+							}
+
 							case REG16_TOKEN: {
 								Reg16_Node* right_operand = calculated_right_operand;
 
