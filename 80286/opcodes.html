@@ -74,7 +74,7 @@
 			<td>or AL imm8</td>
 			<td>or AX imm16</td>
 			<td>push CS</td>
-			<td>pop CS</td>
+			<td>0x0F prefix</td>
 
 			<td>00</td>
 		</tr>
@@ -213,25 +213,25 @@
 		<tr>
 			<td>60</td>
 
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>pusha</td>
+			<td>popa</td>
+			<td>bound r16 m16</td>
+			<td>arpl m16 r16</td>
 
 			<td></td>
 			<td></td>
 			<td></td>
 			<td></td>
 
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>push imm16</td>
+			<td>imul r16 m16 imm16</td>
+			<td>push imm8</td>
+			<td>imul r16 m16 imm8</td>
 
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td>insb</td>
+			<td>insw</td>
+			<td>outsb</td>
+			<td>outsw</td>
 
 			<td>60</td>
 		</tr>
@@ -369,8 +369,8 @@
 		<tr>
 			<td>C0</td>
 
-			<td></td>
-			<td></td>
+			<td>*2 m8 imm8</td>
+			<td>*2 m16 imm8</td>
 			<td>retn imm16</td>
 			<td>ret</td>
 
@@ -379,8 +379,8 @@
 			<td>mov m8 imm8</td>
 			<td>mov m16 imm16</td>
 
-			<td></td>
-			<td></td>
+			<td>enter imm16 imm8</td>
+			<td>leave</td>
 			<td>retf imm16</td>
 			<td>retf</td>
 
@@ -476,5 +476,452 @@
 	<p>*3 test, test, not, neg, mul, imul, div, idiv</p>
 	<p>*4 inc, dec, call, callf, jmp, jmpf, push</p>
 	<p>esc0-7 FPU</p>
+
+	<table>
+		<tr>
+			<td>0x0F prefix</td>
+
+			<td>00</td>
+			<td>01</td>
+			<td>02</td>
+			<td>03</td>
+
+			<td>04</td>
+			<td>05</td>
+			<td>06</td>
+			<td>07</td>
+
+			<td>08</td>
+			<td>09</td>
+			<td>0A</td>
+			<td>0B</td>
+
+			<td>0C</td>
+			<td>0D</td>
+			<td>0E</td>
+			<td>0F</td>
+
+			<td></td>
+		</tr>
+
+		<tr>
+			<td>00</td>
+
+			<td>*5 m16</td>
+			<td>*6 m16</td>
+			<td>lar r m16</td>
+			<td>lsl r m16</td>
+
+			<td></td>
+			<td></td>
+			<td>clts</td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>00</td>
+		</tr>
+
+		<tr>
+			<td>01</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>01</td>
+		</tr>
+
+		<tr>
+			<td>02</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>02</td>
+		</tr>
+
+		<tr>
+			<td>03</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>03</td>
+		</tr>
+
+		<tr>
+			<td>04</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>04</td>
+		</tr>
+
+		<tr>
+			<td>05</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>05</td>
+		</tr>
+
+		<tr>
+			<td>06</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>06</td>
+		</tr>
+
+		<tr>
+			<td>07</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>07</td>
+		</tr>
+
+		<tr>
+			<td>08</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>08</td>
+		</tr>
+
+		<tr>
+			<td>09</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>09</td>
+		</tr>
+
+		<tr>
+			<td>0A</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>0A</td>
+		</tr>
+
+		<tr>
+			<td>0B</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>0B</td>
+		</tr>
+
+		<tr>
+			<td>0C</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>0C</td>
+		</tr>
+
+		<tr>
+			<td>0D</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>0D</td>
+		</tr>
+
+		<tr>
+			<td>0E</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>0E</td>
+		</tr>
+
+		<tr>
+			<td>0F</td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+
+			<td>0F</td>
+		</tr>
+	</table>
+
+	<p>*5 sldt, str, lldt, ltr, verr, verw</p>
+	<p>*6 sgdt, sidt, lgdt, lidt, smsw, lmsw</p>
 </body>
 </html>
