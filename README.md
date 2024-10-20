@@ -7,4 +7,6 @@ Collection of ideal assemblies
 
 [80286 opcodes table](https://alexey1994.github.io/ideal-asm/80286/opcodes.html)
 
+[80386 opcodes table](https://alexey1994.github.io/ideal-asm/80386/opcodes.html)
+
 Usage: compile_8086.x64 < file.asm > out.bin
