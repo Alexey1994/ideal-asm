@@ -1,0 +1,44 @@
+;REG8
+	;NUMBER
+	rol AL, 1
+	rol CH, 1
+
+	;REG8
+	rol AL, CL
+	;rol AL, DL ;error
+
+
+;REG16
+	;NUMBER
+	rol AX, 1
+	rol BX, 1
+
+	;REG8
+	rol AX, CL
+
+
+;REG32
+	;NUMBER
+	rol EAX, 1
+	rol EBX, 1
+
+	;REG8
+	rol EAX, CL
+
+
+;MEM
+	;NUMBER
+	rol byte[BX], 1
+	rol word[BX], 1
+	rol dword[BX], 1
+	rol byte[EBX], 1
+	rol word[EBX], 1
+	rol dword[EBX], 1
+
+	;REG8
+	rol byte[BX], CL
+	rol word[BX], CL
+	rol dword[BX], CL
+	rol byte[EBX], CL
+	rol word[EBX], CL
+	rol dword[EBX], CL

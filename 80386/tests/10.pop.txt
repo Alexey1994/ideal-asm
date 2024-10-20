@@ -1,0 +1,13 @@
+;REG16
+pop DX
+
+;REG32
+pop EBX
+
+;MEM
+;pop byte[BX] ;error
+;pop byte[EBX] ;error
+pop word[BX]
+pop word[EBX]
+pop dword[BX]
+pop dword[EBX]

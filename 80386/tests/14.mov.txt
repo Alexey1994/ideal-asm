@@ -1,0 +1,78 @@
+;SEG
+	;REG16
+	mov CS, AX
+
+	;REG32
+	mov CS, EAX
+
+	;MEM
+	mov CS, [BX]
+	mov CS, [EBX]
+
+
+;REG8
+	;NUMBER
+	mov DL, 1
+
+	;REG8
+	mov CL, DL
+
+	;MEM
+	mov DL, [BX]
+	mov DL, [EBX]
+
+
+;REG16
+	;NUMBER
+	mov AX, 1
+
+	;SEG
+	mov CX, CS
+
+	;REG16
+	mov CX, DX
+
+	;MEM
+	mov AX, [BX]
+	mov AX, [EBX]
+
+
+;REG32
+	;NUMBER
+	mov EAX, 1
+
+	;SEG
+	mov ECX, CS
+
+	;REG32
+	mov ECX, EDX
+
+	;MEM
+	mov EAX, [BX]
+	mov EAX, [EBX]
+
+
+;MEM
+	;NUMBER
+	mov byte[BX], 1
+	mov word[BX], 1
+	mov dword[BX], 1
+	mov byte[EBX], 1
+	mov word[EBX], 1
+	mov dword[EBX], 1
+
+	;SEG
+	mov [BX], DS
+	mov [EBX], DS
+
+	;REG8
+	mov [BX], CH
+	mov [EBX], DH
+
+	;REG16
+	mov [BX], CX
+	mov [EBX], DX
+
+	;REG32
+	mov [BX], ECX
+	mov [EBX], EDX

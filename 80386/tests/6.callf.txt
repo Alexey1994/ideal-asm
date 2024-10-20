@@ -1,0 +1,7 @@
+;MEM
+;callf byte[BX] ;error
+;callf byte[EBX] ;error
+callf word[BX]
+callf word[EBX]
+callf dword[BX]
+callf dword[EBX]

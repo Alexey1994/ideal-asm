@@ -378,7 +378,7 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 	if(first_reg) {
 		if(second_reg) {
 			if(offset) {
-				if(offset->value >= -128 && (Signed_Number16)offset->value < 128) {
+				if((Signed_Number16)offset->value >= -128 && (Signed_Number16)offset->value < 128) {
 					switch(first_reg->index) {
 						case 3: {
 							switch(second_reg->index) {
@@ -523,7 +523,7 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 		}
 		else {
 			if(offset) {
-				if(offset->value >= -128 && (Signed_Number16)offset->value < 128) {
+				if((Signed_Number16)offset->value >= -128 && (Signed_Number16)offset->value < 128) {
 					switch(first_reg->index) {
 						case 3: out(2, (1 << 6) | (function << 3) | 7, offset->value); break; //[BX+offset8]
 						case 5: out(2, (1 << 6) | (function << 3) | 6, offset->value); break; //[BP+offset8]
@@ -2328,6 +2328,94 @@ void generate(Dynamic_Stack* program)
 				break;
 			}
 
+			case LES_TOKEN: {
+				Binary_Operation_Node* n = node;
+				Node* calculated_left_operand = calculate_expression(n->left_operand);
+				Node* calculated_right_operand = calculate_expression(n->right_operand);
+
+				switch(calculated_left_operand->token) {
+					case REG16_TOKEN: {
+						Reg16_Node* left_operand = calculated_left_operand;
+
+						switch(calculated_right_operand->token) {
+							case MEM_TOKEN: {
+								Mem_Node* right_operand = calculated_right_operand;
+
+								generate_segment_prefix(right_operand);
+								out(1, 0xC4);
+								generate_mem(right_operand, left_operand->index);
+
+								break;
+							}
+
+							default: {
+								error(n->right_operand->line_number, "not supported right operand");
+							}
+						}
+
+						break;
+					}
+
+					default: {
+						error(n->left_operand->line_number, "not supported left operand");
+					}
+				}
+
+				/*if(calculated_left_operand->token == CALCULATED_NUMBER_TOKEN) {
+					free_memory(calculated_left_operand);
+				}
+
+				if(calculated_right_operand->token == CALCULATED_NUMBER_TOKEN) {
+					free_memory(calculated_right_operand);
+				}*/
+
+				break;
+			}
+
+			case LDS_TOKEN: {
+				Binary_Operation_Node* n = node;
+				Node* calculated_left_operand = calculate_expression(n->left_operand);
+				Node* calculated_right_operand = calculate_expression(n->right_operand);
+
+				switch(calculated_left_operand->token) {
+					case REG16_TOKEN: {
+						Reg16_Node* left_operand = calculated_left_operand;
+
+						switch(calculated_right_operand->token) {
+							case MEM_TOKEN: {
+								Mem_Node* right_operand = calculated_right_operand;
+
+								generate_segment_prefix(right_operand);
+								out(1, 0xC5);
+								generate_mem(right_operand, left_operand->index);
+
+								break;
+							}
+
+							default: {
+								error(n->right_operand->line_number, "not supported right operand");
+							}
+						}
+
+						break;
+					}
+
+					default: {
+						error(n->left_operand->line_number, "not supported left operand");
+					}
+				}
+
+				/*if(calculated_left_operand->token == CALCULATED_NUMBER_TOKEN) {
+					free_memory(calculated_left_operand);
+				}
+
+				if(calculated_right_operand->token == CALCULATED_NUMBER_TOKEN) {
+					free_memory(calculated_right_operand);
+				}*/
+
+				break;
+			}
+
 			case RETFN_TOKEN: {
 				Unary_Operation_Node* n = node;
 				Node* calculated_operand = calculate_expression(n->operand);
@@ -2457,8 +2545,8 @@ void generate(Dynamic_Stack* program)
 								break;
 							}
 
-							case REG8_TOKEN: {
-								Reg8_Node* right_operand = calculated_right_operand;
+							case REG16_TOKEN: {
+								Reg16_Node* right_operand = calculated_right_operand;
 
 								if(right_operand->index != 2) {
 									error(n->right_operand->line_number, "not supported right operand, use DX or imm8");
@@ -2703,7 +2791,6 @@ void generate(Dynamic_Stack* program)
 				Binary_Operation_Node* n = node;
 				Node* calculated_left_operand = calculate_expression(n->left_operand);
 				Node* calculated_right_operand = calculate_expression(n->right_operand);
-				Number operation_index = node->token - ADD_TOKEN;
 
 				switch(calculated_left_operand->token) {
 					case REG16_TOKEN: {
@@ -2912,6 +2999,10 @@ void generate(Dynamic_Stack* program)
 				Unary_Operation_Node* n = node;
 				Node* calculated_operand = calculate_expression(n->operand);
 				Number operation_index = node->token - SGDT_TOKEN;
+
+				if(node->token == LMSW_TOKEN) {
+					operation_index = 6;
+				}
 
 				switch(calculated_operand->token) {
 					case REG16_TOKEN: {

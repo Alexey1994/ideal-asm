@@ -27,7 +27,6 @@ typedef enum {
 
 	BYTE_TOKEN,
 	WORD_TOKEN,
-	DWORD_TOKEN,
 
 	ORG_TOKEN,
 	DB_TOKEN,
@@ -139,6 +138,8 @@ typedef enum {
 
 	RETN_TOKEN,
 	RET_TOKEN,
+	LES_TOKEN,
+	LDS_TOKEN,
 	RETFN_TOKEN,
 	RETF_TOKEN,
 
@@ -226,7 +227,6 @@ Byte token_names[][16] = {
 
 	"byte",
 	"word",
-	"dword",
 
 	"org",
 	"db",
@@ -338,6 +338,8 @@ Byte token_names[][16] = {
 
 	"retn",
 	"ret",
+	"les",
+	"lds",
 	"retfn",
 	"retf",
 

@@ -1,0 +1,11 @@
+;REG16
+smsw AX
+
+;REG32
+smsw EAX
+
+;MEM
+smsw [BX]
+smsw [EBX]
+lidt [BX]
+lidt [EBX]

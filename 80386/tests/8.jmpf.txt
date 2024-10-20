@@ -1,0 +1,7 @@
+;MEM
+;jmpf byte[BX] ;error
+;jmpf byte[EBX] ;error
+jmpf word[BX]
+jmpf word[EBX]
+jmpf dword[BX]
+jmpf dword[EBX]

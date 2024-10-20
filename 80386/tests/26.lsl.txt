@@ -1,0 +1,16 @@
+;REG16
+	;REG16
+	lsl AX, BX
+
+	;MEM
+	lsl AX, [BX]
+	lsl AX, [EBX]
+
+
+;REG32
+	;REG16
+	lsl EAX, BX
+
+	;MEM
+	lsl EAX, [BX]
+	lsl EAX, [EBX]

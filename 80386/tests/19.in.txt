@@ -1,0 +1,25 @@
+;REG8
+	;NUMBER
+	in AL, 1
+
+	;REG8
+	in AL, DX
+	;in AL, CX ;error
+
+
+;REG16
+	;NUMBER
+	in AX, 1
+
+	;REG8
+	in AX, DX
+	;in AX, CX ;error
+
+
+;REG32
+	;NUMBER
+	in EAX, 1
+
+	;REG8
+	in EAX, DX
+	;in EAX, CX ;error

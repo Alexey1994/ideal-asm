@@ -1,0 +1,10 @@
+;REG16
+	;MEM
+	bound AX, [BX]
+	bound AX, [EBX]
+
+
+;REG32
+	;MEM
+	bound EAX, [BX]
+	bound EAX, [EBX]

@@ -126,12 +126,6 @@ Node* parse_operand()
 			token = read_next_token();
 			break;
 		}
-
-		case DWORD_TOKEN: {
-			operand_size = 32;
-			token = read_next_token();
-			break;
-		}
 	}
 
 	switch(token) {
@@ -363,6 +357,8 @@ Node* parse_instruction()
 		case XCHG_TOKEN:
 		case MOV_TOKEN:
 		case LEA_TOKEN:
+		case LES_TOKEN:
+		case LDS_TOKEN:
 
 		case ROL_TOKEN:
 		case ROR_TOKEN:

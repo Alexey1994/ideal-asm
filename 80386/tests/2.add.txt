@@ -1,0 +1,77 @@
+;REG8
+	;NUMBER
+	add AL, 1
+	add CL, 1
+
+	;REG8
+	add CL, DL
+
+	;MEM
+	add CL, [BX]
+	add CL, [EBX]
+
+
+;REG16
+	;NUMBER
+	add AX, 1
+	add AX, -128
+	add AX, 128
+	add AX, -129
+
+	add CX, 1
+	add CX, -128
+	add CX, 128
+	add CX, -129
+
+	;REG16
+	add CX, DX
+
+	;MEM
+	add AX, [BX]
+	add AX, [EBX]
+
+
+;REG32
+	;NUMBER
+	add EAX, 1
+	add EAX, -128
+	add EAX, 128
+	add EAX, -129
+
+	add ECX, 1
+	add ECX, -128
+	add ECX, 128
+	add ECX, -129
+
+	;REG32
+	add ECX, EDX
+
+	;MEM
+	add EAX, [BX]
+	add EAX, [EBX]
+
+
+;MEM
+	;NUMBER
+	add byte[BX], 1
+	add byte[EBX], 1
+	add word[BX], 1
+	add word[EBX], 1
+	add word[BX], 256
+	add word[EBX], 256
+	add dword[BX], 1
+	add dword[EBX], 1
+	add dword[BX], 256
+	add dword[EBX], 256
+
+	;REG8
+	add byte[BX], AL
+	add byte[EBX], AL
+
+	;REG16
+	add word[BX], AX
+	add word[EBX], AX
+
+	;REG32
+	add word[BX], EAX
+	add word[EBX], EAX

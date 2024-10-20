@@ -1,0 +1,59 @@
+;REG8
+	;NUMBER
+	test AL, 1
+	test CL, 1
+
+	;REG8
+	test AL, CL
+
+	;MEM
+	test BL, [BX]
+	test BL, [EBX]
+
+
+;REG16
+	;NUMBER
+	test AX, 1
+	test DX, 1
+
+	;REG16
+	test AX, CX
+
+	;MEM
+	test AX, [BX]
+	test AX, [EBX]
+
+
+;REG32
+	;NUMBER
+	test EAX, 1
+	test ECX, 1
+
+	;REG32
+	test EAX, EDX
+
+	;MEM
+	test EAX, [BX]
+	test EAX, [EBX]
+
+
+;MEM
+	;NUMBER
+	test byte[BX], 1
+	test byte[EBX], 1
+	test word[BX], 1
+	test word[EBX], 1
+	test dword[BX], 1
+	test dword[EBX], 1
+
+	;REG8
+	test [BX], AL
+	test [EBX], AL
+
+	;REG16
+	test [BX], AX
+	test [EBX], AX
+
+	;REG32
+	test [BX], EAX
+	test [EBX], EAX

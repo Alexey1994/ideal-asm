@@ -1,0 +1,20 @@
+;LONG_ADDRESS
+jmp 8:9
+
+;NUMBER
+jmp 1
+jmp 256
+
+;REG16
+jmp DX
+
+;REG32
+jmp EBX
+
+;MEM
+;jmp byte[BX] ;error
+;jmp byte[EBX] ;error
+jmp word[BX]
+jmp word[EBX]
+jmp dword[BX]
+jmp dword[EBX]

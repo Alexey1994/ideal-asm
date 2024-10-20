@@ -1,0 +1,23 @@
+;3 operands
+imul AX, [BX], 1
+imul AX, [EBX], 1
+imul EAX, [BX], 1
+imul EAX, [EBX], 1
+
+
+;REG8
+imul AH
+
+;REG16
+imul BX
+
+;REG32
+imul EDX
+
+;MEM
+imul byte[BX]
+imul word[BX]
+imul dword[BX]
+imul byte[EBX]
+imul word[EBX]
+imul dword[EBX]

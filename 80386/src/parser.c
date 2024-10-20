@@ -15,7 +15,7 @@ Link_Node;
 typedef struct {
 	Token    token;
 	Number   line_number;
-	Number16 value;
+	Number32 value;
 	Number   size;
 }
 Number_Node;
@@ -55,7 +55,35 @@ typedef struct {
 	Number   line_number;
 	Number32 index;
 }
+Reg32_Node;
+
+typedef struct {
+	Token    token;
+	Number   line_number;
+	Number32 index;
+}
 Seg_Node;
+
+typedef struct {
+	Token    token;
+	Number   line_number;
+	Number32 index;
+}
+CRx_Node;
+
+typedef struct {
+	Token    token;
+	Number   line_number;
+	Number32 index;
+}
+DRx_Node;
+
+typedef struct {
+	Token    token;
+	Number   line_number;
+	Number32 index;
+}
+TRx_Node;
 
 typedef struct {
 	Token        token;
@@ -66,6 +94,9 @@ typedef struct {
 	Reg16_Node*  first_reg;
 	Reg16_Node*  second_reg;
 	Number_Node* offset;
+	Number_Node* first_reg_shift;
+	Number_Node* second_reg_shift;
+	Number       bitness;
 }
 Mem_Node;
 
@@ -83,6 +114,15 @@ typedef struct {
 	Node*    right_operand;
 }
 Binary_Operation_Node;
+
+typedef struct {
+	Token    token;
+	Number   line_number;
+	Node*    left_operand;
+	Node*    center_operand;
+	Node*    right_operand;
+}
+Ternary_Operation_Node;
 
 typedef struct {
 	Token    token;
@@ -135,13 +175,21 @@ Node* parse_operand()
 			token = read_next_token();
 			break;
 		}
+
+		case DWORD_TOKEN: {
+			operand_size = 32;
+			token = read_next_token();
+			break;
+		}
 	}
 
 	switch(token) {
 		case ES_TOKEN:
 		case CS_TOKEN:
 		case SS_TOKEN:
-		case DS_TOKEN: {
+		case DS_TOKEN:
+		case FS_TOKEN:
+		case GS_TOKEN: {
 			Number l_n = line_number;
 
 			segment_index = token - ES_TOKEN;
@@ -236,6 +284,74 @@ Node* parse_operand()
 			return new_node;
 		}
 
+		case EAX_TOKEN:
+		case ECX_TOKEN:
+		case EDX_TOKEN:
+		case EBX_TOKEN:
+		case ESP_TOKEN:
+		case EBP_TOKEN:
+		case ESI_TOKEN:
+		case EDI_TOKEN: {
+			Reg32_Node* new_node = create_node(sizeof(Reg32_Node));
+			new_node->token = REG32_TOKEN;
+			new_node->index = token - EAX_TOKEN;
+
+			token = read_next_token();
+
+			return new_node;
+		}
+
+		case CR0_TOKEN:
+		case CR1_TOKEN:
+		case CR2_TOKEN:
+		case CR3_TOKEN:
+		case CR4_TOKEN:
+		case CR5_TOKEN:
+		case CR6_TOKEN:
+		case CR7_TOKEN: {
+			Reg32_Node* new_node = create_node(sizeof(Reg32_Node));
+			new_node->token = CRx_TOKEN;
+			new_node->index = token - CR0_TOKEN;
+
+			token = read_next_token();
+
+			return new_node;
+		}
+
+		case DR0_TOKEN:
+		case DR1_TOKEN:
+		case DR2_TOKEN:
+		case DR3_TOKEN:
+		case DR4_TOKEN:
+		case DR5_TOKEN:
+		case DR6_TOKEN:
+		case DR7_TOKEN: {
+			Reg32_Node* new_node = create_node(sizeof(Reg32_Node));
+			new_node->token = DRx_TOKEN;
+			new_node->index = token - DR0_TOKEN;
+
+			token = read_next_token();
+
+			return new_node;
+		}
+
+		case TR0_TOKEN:
+		case TR1_TOKEN:
+		case TR2_TOKEN:
+		case TR3_TOKEN:
+		case TR4_TOKEN:
+		case TR5_TOKEN:
+		case TR6_TOKEN:
+		case TR7_TOKEN: {
+			Reg32_Node* new_node = create_node(sizeof(Reg32_Node));
+			new_node->token = TRx_TOKEN;
+			new_node->index = token - TR0_TOKEN;
+
+			token = read_next_token();
+
+			return new_node;
+		}
+
 		case '[': {
 			Mem_Node* new_node = create_node(sizeof(Mem_Node));
 			new_node->token = MEM_TOKEN;
@@ -244,8 +360,20 @@ Node* parse_operand()
 			new_node->first_reg = 0;
 			new_node->second_reg = 0;
 			new_node->offset = 0;
+			new_node->first_reg_shift = 0;
+			new_node->second_reg_shift = 0;
+			new_node->bitness = 0;
 
 			token = read_next_token();
+
+			if(token == WORD_TOKEN) {
+				new_node->bitness = 16;
+				token = read_next_token();
+			}
+			else if(token == DWORD_TOKEN) {
+				new_node->bitness = 32;
+				token = read_next_token();
+			}
 
 			new_node->expression = parse_expression();
 
@@ -299,6 +427,7 @@ Node* parse_arithmetic_expression()
 	while(
 		token == '*'
 		|| token == '/'
+		|| token == SHIFT_LEFT_TOKEN
 	) {
 		Binary_Operation_Node* operation_node = create_node(sizeof(Binary_Operation_Node));
 		operation_node->left_operand = new_node;
@@ -368,6 +497,9 @@ Node* parse_instruction()
 		case LEA_TOKEN:
 		case LES_TOKEN:
 		case LDS_TOKEN:
+		case LSS_TOKEN:
+		case LFS_TOKEN:
+		case LGS_TOKEN:
 
 		case ROL_TOKEN:
 		case ROR_TOKEN:
@@ -383,7 +515,23 @@ Node* parse_instruction()
 
 		case BOUND_TOKEN:
 
-		case ENTER_TOKEN: {
+		case ENTER_TOKEN:
+
+		case ARPL_TOKEN:
+
+		case LAR_TOKEN:
+		case LSL_TOKEN:
+
+		case BT_TOKEN:
+		case BTS_TOKEN:
+		case BTR_TOKEN:
+		case BTC_TOKEN:
+
+		case MOVZX_TOKEN:
+		case MOVSX_TOKEN:
+
+		case BSF_TOKEN:
+		case BSR_TOKEN: {
 			Binary_Operation_Node* new_node = create_node(sizeof(Binary_Operation_Node));
 
 			token = read_next_token();
@@ -440,7 +588,39 @@ Node* parse_instruction()
 		case LOOPNZ_TOKEN:
 		case LOOPZ_TOKEN:
 		case LOOP_TOKEN:
+		case JECXZ_TOKEN:
 		case JCXZ_TOKEN:
+
+		case SLDT_TOKEN:
+		case STR_TOKEN:
+		case LLDT_TOKEN:
+		case LTR_TOKEN:
+		case VERR_TOKEN:
+		case VERW_TOKEN:
+
+		case SGDT_TOKEN:
+		case SIDT_TOKEN:
+		case LGDT_TOKEN:
+		case LIDT_TOKEN:
+		case SMSW_TOKEN:
+		case LMSW_TOKEN:
+
+		case SETO_TOKEN:
+		case SETNO_TOKEN:
+		case SETC_TOKEN:
+		case SETNC_TOKEN:
+		case SETZ_TOKEN:
+		case SETNZ_TOKEN:
+		case SETNA_TOKEN:
+		case SETA_TOKEN:
+		case SETS_TOKEN:
+		case SETNS_TOKEN:
+		case SETPE_TOKEN:
+		case SETPO_TOKEN:
+		case SETL_TOKEN:
+		case SETNL_TOKEN:
+		case SETNG_TOKEN:
+		case SETG_TOKEN:
 
 		case ORG_TOKEN: {
 			Unary_Operation_Node* new_node = create_node(sizeof(Unary_Operation_Node));
@@ -457,7 +637,9 @@ Node* parse_instruction()
 		case AAA_TOKEN:
 		case AAS_TOKEN:
 
+		case CWDE_TOKEN:
 		case CBW_TOKEN:
+		case CDQ_TOKEN:
 		case CWD_TOKEN:
 
 		case WAIT_TOKEN:
@@ -469,14 +651,19 @@ Node* parse_instruction()
 
 		case MOVSB_TOKEN:
 		case MOVSW_TOKEN:
+		case MOVSD_TOKEN:
 		case CMPSB_TOKEN:
 		case CMPSW_TOKEN:
+		case CMPSD_TOKEN:
 		case STOSB_TOKEN:
 		case STOSW_TOKEN:
+		case STOSD_TOKEN:
 		case LODSB_TOKEN:
 		case LODSW_TOKEN:
+		case LODSD_TOKEN:
 		case SCASB_TOKEN:
 		case SCASW_TOKEN:
+		case SCASD_TOKEN:
 
 		case RET_TOKEN:
 		case RETF_TOKEN:
@@ -503,10 +690,14 @@ Node* parse_instruction()
 
 		case INSB_TOKEN:
 		case INSW_TOKEN:
+		case INSD_TOKEN:
 		case OUTSB_TOKEN:
 		case OUTSW_TOKEN:
+		case OUTSD_TOKEN:
 
 		case LEAVE_TOKEN:
+
+		case CLTS_TOKEN:
 
 		case DB_TOKEN: {
 			Node* new_node = create_node(sizeof(Node));
@@ -526,16 +717,37 @@ Node* parse_instruction()
 			if(token == ',') {
 				new_node->destination_operand = parse_expression();
 
-				if(token != ',') {
-					error(line_number, 'expected ,');
+				if(token == ',') {
+					new_node->right_operand = parse_expression();
 				}
-
-				new_node->right_operand = parse_expression();
 			}
 			else {
 				new_node->destination_operand = 0;
 				new_node->right_operand = 0;
 			}
+
+			return new_node;
+		}
+
+		case SHLD_TOKEN:
+		case SHRD_TOKEN: {
+			Ternary_Operation_Node* new_node = create_node(sizeof(Ternary_Operation_Node));
+
+			token = read_next_token();
+
+			new_node->left_operand = parse_expression();
+
+			if(token != ',') {
+				error(line_number, "expected ,");
+			}
+
+			new_node->center_operand = parse_expression();
+
+			if(token != ',') {
+				error(line_number, "expected ,");
+			}
+
+			new_node->right_operand = parse_expression();
 
 			return new_node;
 		}

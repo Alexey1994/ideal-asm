@@ -1,0 +1,4 @@
+;NUMBER
+jo 1
+jo 0x100
+jo 0x10000

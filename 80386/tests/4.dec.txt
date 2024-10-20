@@ -1,0 +1,16 @@
+;REG8
+dec CL
+
+;REG16
+dec DX
+
+;REG32
+dec EBX
+
+;MEM
+dec byte[BX]
+dec byte[EBX]
+dec word[BX]
+dec word[EBX]
+dec dword[BX]
+dec dword[EBX]

@@ -1,0 +1,10 @@
+;REG16
+	;MEM
+	lea AX, [BX]
+	lea AX, [EBX]
+
+
+;REG32
+	;MEM
+	lea EAX, [BX]
+	lea EAX, [EBX]

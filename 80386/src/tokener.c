@@ -27,6 +27,7 @@ typedef enum {
 
 	BYTE_TOKEN,
 	WORD_TOKEN,
+	DWORD_TOKEN,
 
 	ORG_TOKEN,
 	DB_TOKEN,
@@ -49,10 +50,48 @@ typedef enum {
 	SI_TOKEN,
 	DI_TOKEN,
 
+	EAX_TOKEN,
+	ECX_TOKEN,
+	EDX_TOKEN,
+	EBX_TOKEN,
+	ESP_TOKEN,
+	EBP_TOKEN,
+	ESI_TOKEN,
+	EDI_TOKEN,
+
 	ES_TOKEN,
 	CS_TOKEN,
 	SS_TOKEN,
 	DS_TOKEN,
+	FS_TOKEN,
+	GS_TOKEN,
+
+	CR0_TOKEN,
+	CR1_TOKEN,
+	CR2_TOKEN,
+	CR3_TOKEN,
+	CR4_TOKEN,
+	CR5_TOKEN,
+	CR6_TOKEN,
+	CR7_TOKEN,
+
+	DR0_TOKEN,
+	DR1_TOKEN,
+	DR2_TOKEN,
+	DR3_TOKEN,
+	DR4_TOKEN,
+	DR5_TOKEN,
+	DR6_TOKEN,
+	DR7_TOKEN,
+
+	TR0_TOKEN,
+	TR1_TOKEN,
+	TR2_TOKEN,
+	TR3_TOKEN,
+	TR4_TOKEN,
+	TR5_TOKEN,
+	TR6_TOKEN,
+	TR7_TOKEN,
 
 	ADD_TOKEN,
 	OR_TOKEN,
@@ -115,7 +154,9 @@ typedef enum {
 	AAA_TOKEN,
 	AAS_TOKEN,
 
+	CWDE_TOKEN,
 	CBW_TOKEN,
+	CDQ_TOKEN,
 	CWD_TOKEN,
 
 	WAIT_TOKEN,
@@ -127,19 +168,27 @@ typedef enum {
 
 	MOVSB_TOKEN,
 	MOVSW_TOKEN,
+	MOVSD_TOKEN,
 	CMPSB_TOKEN,
 	CMPSW_TOKEN,
+	CMPSD_TOKEN,
 	STOSB_TOKEN,
 	STOSW_TOKEN,
+	STOSD_TOKEN,
 	LODSB_TOKEN,
 	LODSW_TOKEN,
+	LODSD_TOKEN,
 	SCASB_TOKEN,
 	SCASW_TOKEN,
+	SCASD_TOKEN,
 
 	RETN_TOKEN,
 	RET_TOKEN,
 	LES_TOKEN,
 	LDS_TOKEN,
+	LSS_TOKEN,
+	LFS_TOKEN,
+	LGS_TOKEN,
 	RETFN_TOKEN,
 	RETF_TOKEN,
 
@@ -151,6 +200,7 @@ typedef enum {
 	LOOPNZ_TOKEN,
 	LOOPZ_TOKEN,
 	LOOP_TOKEN,
+	JECXZ_TOKEN,
 	JCXZ_TOKEN,
 
 	IN_TOKEN,
@@ -176,20 +226,79 @@ typedef enum {
 
 	INSB_TOKEN,
 	INSW_TOKEN,
+	INSD_TOKEN,
 	OUTSB_TOKEN,
 	OUTSW_TOKEN,
+	OUTSD_TOKEN,
 
 	ENTER_TOKEN,
 	LEAVE_TOKEN,
+
+	ARPL_TOKEN,
+
+	SLDT_TOKEN,
+	STR_TOKEN,
+	LLDT_TOKEN,
+	LTR_TOKEN,
+	VERR_TOKEN,
+	VERW_TOKEN,
+
+	SGDT_TOKEN,
+	SIDT_TOKEN,
+	LGDT_TOKEN,
+	LIDT_TOKEN,
+	SMSW_TOKEN,
+	LMSW_TOKEN,
+
+	LAR_TOKEN,
+	LSL_TOKEN,
+
+	CLTS_TOKEN,
+
+	SETO_TOKEN,
+	SETNO_TOKEN,
+	SETC_TOKEN,
+	SETNC_TOKEN,
+	SETZ_TOKEN,
+	SETNZ_TOKEN,
+	SETNA_TOKEN,
+	SETA_TOKEN,
+	SETS_TOKEN,
+	SETNS_TOKEN,
+	SETPE_TOKEN,
+	SETPO_TOKEN,
+	SETL_TOKEN,
+	SETNL_TOKEN,
+	SETNG_TOKEN,
+	SETG_TOKEN,
+
+	BT_TOKEN,
+	BTS_TOKEN,
+	BTR_TOKEN,
+	BTC_TOKEN,
+
+	SHLD_TOKEN,
+	SHRD_TOKEN,
+
+	MOVZX_TOKEN,
+	MOVSX_TOKEN,
+
+	BSF_TOKEN,
+	BSR_TOKEN,
 
 
 
 
 	REG8_TOKEN,
 	REG16_TOKEN,
+	REG32_TOKEN,
 	SEG_TOKEN,
+	CRx_TOKEN,
+	TRx_TOKEN,
+	DRx_TOKEN,
 	MEM_TOKEN,
 	NEG_OPERATION_TOKEN,
+	SHIFT_LEFT_TOKEN,
 
 	LONG_ADDRESS_TOKEN,
 	CALCULATED_NUMBER_TOKEN,
@@ -206,6 +315,7 @@ Byte token_names[][16] = {
 
 	"byte",
 	"word",
+	"dword",
 
 	"org",
 	"db",
@@ -228,10 +338,48 @@ Byte token_names[][16] = {
 	"SI",
 	"DI",
 
+	"EAX",
+	"ECX",
+	"EDX",
+	"EBX",
+	"ESP",
+	"EBP",
+	"ESI",
+	"EDI",
+
 	"ES",
 	"CS",
 	"SS",
 	"DS",
+	"FS",
+	"GS",
+
+	"CR0",
+	"CR1",
+	"CR2",
+	"CR3",
+	"CR4",
+	"CR5",
+	"CR6",
+	"CR7",
+
+	"DR0",
+	"DR1",
+	"DR2",
+	"DR3",
+	"DR4",
+	"DR5",
+	"DR6",
+	"DR7",
+
+	"TR0",
+	"TR1",
+	"TR2",
+	"TR3",
+	"TR4",
+	"TR5",
+	"TR6",
+	"TR7",
 
 	"add",
 	"or",
@@ -294,7 +442,9 @@ Byte token_names[][16] = {
 	"aaa",
 	"aas",
 
+	"cwde",
 	"cbw",
+	"cdq",
 	"cwd",
 
 	"wait",
@@ -306,19 +456,27 @@ Byte token_names[][16] = {
 
 	"movsb",
 	"movsw",
+	"movsd",
 	"cmpsb",
 	"cmpsw",
+	"cmpsd",
 	"stosb",
 	"stosw",
+	"stosd",
 	"lodsb",
 	"lodsw",
+	"lodsd",
 	"scasb",
 	"scasw",
+	"scasd",
 
 	"retn",
 	"ret",
 	"les",
 	"lds",
+	"lss",
+	"lfs",
+	"lgs",
 	"retfn",
 	"retf",
 
@@ -330,6 +488,7 @@ Byte token_names[][16] = {
 	"loopnz",
 	"loopz",
 	"loop",
+	"jecxz",
 	"jcxz",
 
 	"in",
@@ -355,11 +514,65 @@ Byte token_names[][16] = {
 
 	"insb",
 	"insw",
+	"insd",
 	"outsb",
 	"outsw",
+	"outsd",
 
 	"enter",
 	"leave",
+
+	"arpl",
+
+	"sldt",
+	"str",
+	"lldt",
+	"ltr",
+	"verr",
+	"verw",
+
+	"sgdt",
+	"sidt",
+	"lgdt",
+	"lidt",
+	"smsw",
+	"lmsw",
+
+	"lar",
+	"lsl",
+
+	"clts",
+
+	"seto",
+	"setno",
+	"setc",
+	"setnc",
+	"setz",
+	"setnz",
+	"setna",
+	"seta",
+	"sets",
+	"setns",
+	"setpe",
+	"setpo",
+	"setl",
+	"setnl",
+	"setng",
+	"setg",
+
+	"bt",
+	"bts",
+	"btr",
+	"btc",
+
+	"shld",
+	"shrd",
+
+	"movzx",
+	"movsx",
+
+	"bsf",
+	"bsr",
 };
 
 /*
@@ -414,6 +627,25 @@ Token read_next_token()
 				next(&stdin, 1);
 
 				goto repeat;
+			}
+
+			case '<': {
+				next(&stdin, 1);
+
+				if(peek_bytes(&stdin, &head_character, sizeof(head_character)) != sizeof(head_character)) {
+					return '<';
+				}
+
+				switch(head_character) {
+					case '<':
+						next(&stdin, 1);
+						return SHIFT_LEFT_TOKEN;
+
+					default:
+						return '<';
+				}
+
+				break;
 			}
 
 			case '0'...'9': {
@@ -538,7 +770,7 @@ Token read_next_token()
 				head_character = '\0';
 				write_bytes_in_dynamic_stack(&name_value, &head_character, 1);
 
-				for(i = BYTE_TOKEN; i <= LEAVE_TOKEN; ++i) {
+				for(i = BYTE_TOKEN; i <= BSR_TOKEN; ++i) {
 					if(!compare_strings(token_names[i - EOF_TOKEN], name_value.stack.data)) {
 						deinitialize_dynamic_stack(&name_value);
 						return i;

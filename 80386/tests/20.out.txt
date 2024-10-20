@@ -1,0 +1,20 @@
+;NUMBER
+	;REG8
+	out 1, AL
+
+	;REG16
+	out 1, AX
+
+	;REG32
+	out 1, EAX
+
+
+;REG16
+	;REG8
+	out DX, AL
+
+	;REG16
+	out DX, AX
+
+	;REG32
+	out DX, EAX

@@ -1,0 +1,19 @@
+;LONG_ADDRESS
+call 8:9
+
+;NUMBER
+call 1
+
+;REG16
+call DX
+
+;REG32
+call EBX
+
+;MEM
+;call byte[BX] ;error
+;call byte[EBX] ;error
+call word[BX]
+call word[EBX]
+call dword[BX]
+call dword[EBX]

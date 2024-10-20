@@ -1,0 +1,9 @@
+;REG16
+	;REG16
+	arpl AX, BX
+
+
+;MEM
+	;REG16
+	arpl [BX], BX
+	arpl [EBX], BX

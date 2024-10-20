@@ -1,0 +1,16 @@
+;REG8
+not AH
+
+;REG16
+not BX
+
+;REG32
+not EDX
+
+;MEM
+not byte[BX]
+not word[BX]
+not dword[BX]
+not byte[EBX]
+not word[EBX]
+not dword[EBX]

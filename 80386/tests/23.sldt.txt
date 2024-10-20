@@ -1,0 +1,9 @@
+;REG16
+sldt AX
+
+;REG32
+sldt EAX
+
+;MEM
+sldt [BX]
+sldt [EBX]

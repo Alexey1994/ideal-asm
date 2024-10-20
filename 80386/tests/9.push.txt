@@ -1,0 +1,22 @@
+;MEM
+push 1
+push 256
+
+;REG16
+push DX
+
+;REG32
+push EBX
+
+;SEG
+push DS
+push FS
+push GS
+
+;MEM
+;push byte[BX] ;error
+;push byte[EBX] ;error
+push word[BX]
+push word[EBX]
+push dword[BX]
+push dword[EBX]

@@ -1,0 +1,131 @@
+mov EAX, CR0
+mov EBX, CR1
+
+mov EAX, DR0
+mov EBX, DR1
+
+;mov EAX, TR0
+;mov EBX, TR1
+
+mov CR0, EAX
+mov DR0, EAX
+;mov TR0, EAX
+
+
+lss EAX, [BX]
+lfs EAX, [BX]
+lgs EAX, [BX]
+
+
+imul ECX, EDX
+imul CX, DX
+imul ECX, [BP]
+imul ECX, [EAX]
+imul ECX, [EBP]
+imul ECX, [EBP + -4]
+imul ECX, [EBX+EAX]
+imul ECX, [EAX+EBP]
+;imul ECX, [EBP+EAX]
+
+seto AL
+seto DL
+seto [BX]
+seto [EBX]
+
+bt AX, 1
+bt CX, 1
+bt EAX, 1
+bt ECX, 1
+bt word[BX], 1
+bt dword[BX], 1
+bt word[EBX], 1
+bt dword[EBX], 1
+bt EAX, EBX
+bt AX, BX
+bt [BX], ECX
+bt [EBX], ECX
+bt [BX], CX
+bt [EBX], CX
+
+bts AX, 1
+bts CX, 1
+bts EAX, 1
+bts ECX, 1
+bts word[BX], 1
+bts dword[BX], 1
+bts word[EBX], 1
+bts dword[EBX], 1
+bts EAX, EBX
+bts AX, BX
+bts [BX], ECX
+bts [EBX], ECX
+bts [BX], CX
+bts [EBX], CX
+
+btr AX, 1
+btr CX, 1
+btr EAX, 1
+btr ECX, 1
+btr word[BX], 1
+btr dword[BX], 1
+btr word[EBX], 1
+btr dword[EBX], 1
+btr EAX, EBX
+btr AX, BX
+btr [BX], ECX
+btr [EBX], ECX
+btr [BX], CX
+btr [EBX], CX
+
+btc AX, 1
+btc CX, 1
+btc EAX, 1
+btc ECX, 1
+btc word[BX], 1
+btc dword[BX], 1
+btc word[EBX], 1
+btc dword[EBX], 1
+btc EAX, EBX
+btc AX, BX
+btc [BX], ECX
+btc [EBX], ECX
+btc [BX], CX
+btc [EBX], CX
+
+shld EAX, EBX, 1
+shld EAX, EBX, CL
+shld [BX], ECX, 1
+shld [BX], ECX, CL
+shld [EBX], ECX, 1
+shld [EBX], ECX, CL
+
+shrd EAX, EBX, 1
+shrd EAX, EBX, CL
+shrd [BX], ECX, 1
+shrd [BX], ECX, CL
+shrd [EBX], ECX, 1
+shrd [EBX], ECX, CL
+
+movzx EAX, CH
+movzx EAX, byte[BX]
+movzx EAX, byte[EBX]
+movzx EAX, CX
+movzx EAX, word[BX]
+movzx EAX, word[EBX]
+
+movsx EAX, CH
+movsx EAX, byte[BX]
+movsx EAX, byte[EBX]
+movsx EAX, CX
+movsx EAX, word[BX]
+movsx EAX, word[EBX]
+
+bsf AX, [BX]
+bsf AX, [EBX]
+bsf EAX, [BX]
+bsf EAX, [EBX]
+
+bsr AX, [BX]
+bsr AX, [EBX]
+bsr EAX, [BX]
+bsr EAX, [EBX]

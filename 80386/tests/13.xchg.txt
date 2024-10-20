@@ -1,0 +1,39 @@
+;REG8
+	;REG8
+	xchg AL, CL
+
+	;MEM
+	xchg BL, [BX]
+	xchg BL, [EBX]
+
+
+;REG16
+	;REG16
+	xchg AX, CX
+
+	;MEM
+	xchg BX, [BX]
+	xchg BX, [EBX]
+
+
+;REG32
+	;REG32
+	xchg EAX, ECX
+
+	;MEM
+	xchg EBX, [BX]
+	xchg EBX, [EBX]
+
+
+;MEM
+	;REG8
+	xchg [BX], CL
+	xchg [EBX], CL
+
+	;REG16
+	xchg [BX], DX
+	xchg [EBX], DX
+
+	;REG32
+	xchg [BX], EAX
+	xchg [EBX], EAX
