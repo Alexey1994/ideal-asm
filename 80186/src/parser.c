@@ -88,10 +88,10 @@ typedef struct {
 	Token    token;
 	Number   line_number;
 	Node*    left_operand;
-	Node*    destination_operand;
+	Node*    center_operand;
 	Node*    right_operand;
 }
-Imul_Node;
+Ternary_Operation_Node;
 
 
 Token token;
@@ -517,14 +517,14 @@ Node* parse_instruction()
 		}
 
 		case IMUL_TOKEN: {
-			Imul_Node* new_node = create_node(sizeof(Imul_Node));
+			Ternary_Operation_Node* new_node = create_node(sizeof(Ternary_Operation_Node));
 
 			token = read_next_token();
 
 			new_node->left_operand = parse_expression();
 
 			if(token == ',') {
-				new_node->destination_operand = parse_expression();
+				new_node->center_operand = parse_expression();
 
 				if(token != ',') {
 					error(line_number, 'expected ,');
@@ -533,7 +533,7 @@ Node* parse_instruction()
 				new_node->right_operand = parse_expression();
 			}
 			else {
-				new_node->destination_operand = 0;
+				new_node->center_operand = 0;
 				new_node->right_operand = 0;
 			}
 

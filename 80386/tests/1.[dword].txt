@@ -1,0 +1,33 @@
+;inc dword[ECX + EAX<<1 + 1] ;error
+;inc dword[ESP<<1 + ECX + 1] ;error
+inc dword[EAX<<1 + ECX + 1]
+inc dword[EAX<<1 + ECX + 128]
+
+;inc dword[ESP + EDX + 1] ;error
+inc dword[ECX + EDX + 1]
+inc dword[ECX + EDX + 128]
+
+;inc dword[ESP<<1 + EBP] ;error
+inc dword[EAX + EBP]
+inc dword[ESP + EBP]
+inc dword[EBP + ESP]
+
+;inc dword[ESP<<1 + 1]
+inc dword[EBP<<1 + 1]
+
+inc dword[ESP + 1]
+inc dword[EBP + 1]
+inc dword[ECX + 1]
+
+inc dword[ESP + 128]
+inc dword[EBP + 128]
+inc dword[ECX + 128]
+
+;inc dword[ESP<<1] ;error
+inc dword[EDX<<3]
+
+inc dword[ESP]
+inc dword[EBP]
+inc dword[ECX]
+
+inc dword[1]

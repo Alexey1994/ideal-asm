@@ -1,8 +1,0 @@
-inc dword[EAX + EAX<<1 + 256]
-inc dword[ECX + ECX<<1 + 256]
-inc dword[EDX + EDX<<1 + 256]
-inc dword[EBX + EBX<<1 + 256]
-;inc dword[ESP + ESP + 1] ;error
-inc dword[EBP + EBP<<1 + 256]
-inc dword[ESI + ESI<<1 + 256]
-inc dword[EDI + EDI<<1 + 256]

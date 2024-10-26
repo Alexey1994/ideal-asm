@@ -677,7 +677,7 @@ void generate(Dynamic_Stack* program)
 								Number_Node* right_operand = calculated_right_operand;
 
 								if(left_operand->index == 0) {
-									if(right_operand->value < 256) {
+									if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
 										out(3, 0x83, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									}
 									else {
@@ -685,7 +685,7 @@ void generate(Dynamic_Stack* program)
 									}
 								}
 								else {
-									if(right_operand->value < 256) {
+									if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
 										out(3, 0x83, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									}
 									else {
@@ -739,7 +739,7 @@ void generate(Dynamic_Stack* program)
 									}
 
 									case 16: {
-										if(right_operand->value < 256) {
+										if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
 											generate_segment_prefix(left_operand);
 											out(1, 0x83);
 											generate_mem(left_operand, operation_index);
@@ -843,7 +843,7 @@ void generate(Dynamic_Stack* program)
 							}
 
 							default: {
-								error(n->operand->line_number, "inc with not supported operand size");
+								error(n->operand->line_number, "not supported operand size");
 							}
 						}
 
@@ -851,7 +851,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "inc with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -898,7 +898,7 @@ void generate(Dynamic_Stack* program)
 							}
 
 							default: {
-								error(n->operand->line_number, "dec with not supported operand size");
+								error(n->operand->line_number, "not supported operand size");
 							}
 						}
 
@@ -906,7 +906,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "dec with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -937,7 +937,7 @@ void generate(Dynamic_Stack* program)
 							}
 
 							default: {
-								error(n->offset->line_number, "call with not supported offset");
+								error(n->offset->line_number, "not supported offset");
 							}
 						}
 
@@ -977,7 +977,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "call with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -1004,7 +1004,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "callf with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -1035,7 +1035,7 @@ void generate(Dynamic_Stack* program)
 							}
 
 							default: {
-								error(n->offset->line_number, "jmp with not supported offset");
+								error(n->offset->line_number, "not supported offset");
 							}
 						}
 
@@ -1053,12 +1053,12 @@ void generate(Dynamic_Stack* program)
 
 						offset = operand->value - (current_address + 2);
 
-						if(offset > 127 || offset < -128) {
-							offset = operand->value - (current_address + 3);
-							out(3, 0xE9, offset, offset >> 8);
+						if(offset >= -128 && offset < 128) {
+							out(2, 0xEB, offset);
 						}
 						else {
-							out(2, 0xEB, offset);
+							offset = operand->value - (current_address + 3);
+							out(3, 0xE9, offset, offset >> 8);
 						}
 
 						break;
@@ -1081,7 +1081,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "call with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -1108,7 +1108,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "jmpf with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -1135,13 +1135,6 @@ void generate(Dynamic_Stack* program)
 
 						out(1, 0x06 + operand->index * 8);
 
-						//if(operand->index < 4) {
-						//	out(1, 0x06 + operand->index * 8);
-						//}
-						//else {
-						//	out(2, 0x0F, 0xA0 + (operand->index - 4) * 8);
-						//}
-
 						break;
 					}
 
@@ -1155,7 +1148,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "push with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -1182,13 +1175,6 @@ void generate(Dynamic_Stack* program)
 
 						out(1, 0x07 + operand->index * 8);
 
-						//if(operand->index < 4) {
-						//	out(1, 0x07 + operand->index * 8);
-						//}
-						//else {
-						//	out(2, 0x0F, 0xA1 + (operand->index - 4) * 8);
-						//}
-
 						break;
 					}
 
@@ -1202,7 +1188,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "pop with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -1241,15 +1227,6 @@ void generate(Dynamic_Stack* program)
 						Signed_Number offset;
 
 						offset = operand->value - (current_address + 2);
-
-						/*if(offset > 127 || offset < -128) {
-							offset = operand->value - (current_address + 4);
-							out(4, 0x0F, 0x80 + operation_index, offset, offset >> 8);
-						}
-						else {
-							out(2, 0x70 + operation_index, offset);
-						}*/
-
 						out(2, 0x70 + operation_index, offset);
 
 						break;
@@ -1906,7 +1883,6 @@ void generate(Dynamic_Stack* program)
 									out(2, 0xD0, (3 << 6) | (operation_index << 3) | left_operand->index);
 								}
 								else {
-									//out(3, 0xC0, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									error(n->right_operand->line_number, "unsupported right operand, use only 1");
 								}
 
@@ -1945,7 +1921,6 @@ void generate(Dynamic_Stack* program)
 									out(2, 0xD1, (3 << 6) | (operation_index << 3) | left_operand->index);
 								}
 								else {
-									//out(3, 0xC1, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									error(n->right_operand->line_number, "unsupported right operand, use only 1");
 								}
 
@@ -1988,10 +1963,6 @@ void generate(Dynamic_Stack* program)
 											generate_mem(left_operand, operation_index);
 										}
 										else {
-											//generate_segment_prefix(left_operand);
-											//out(1, 0xC0);
-											//generate_mem(left_operand, operation_index);
-											//out(1, right_operand->value);
 											error(n->right_operand->line_number, "unsupported right operand, use only 1");
 										}
 										
@@ -2005,10 +1976,6 @@ void generate(Dynamic_Stack* program)
 											generate_mem(left_operand, operation_index);
 										}
 										else {
-											//generate_segment_prefix(left_operand);
-											//out(1, 0xC1);
-											//generate_mem(left_operand, operation_index);
-											//out(1, right_operand->value);
 											error(n->right_operand->line_number, "unsupported right operand, use only 1");
 										}
 
@@ -2199,7 +2166,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "retn with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -2318,7 +2285,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "retfn with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -2354,7 +2321,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "int with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -2667,7 +2634,6 @@ void generate(Dynamic_Stack* program)
 			case ORG_TOKEN: {
 				Unary_Operation_Node* n = node;
 				Node* calculated_operand = calculate_expression(n->operand);
-				Number operation_index = node->token - LOOPNZ_TOKEN;
 
 				switch(calculated_operand->token) {
 					case NUMBER_TOKEN:

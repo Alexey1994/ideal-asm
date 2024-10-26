@@ -428,7 +428,6 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 	Number_Node* offset;
 	Number_Node* first_reg_shift;
 	Number_Node* second_reg_shift;
-	//Number_Node* reg_shift;
 
 	first_reg = mem_node->first_reg;
 	second_reg = mem_node->second_reg;
@@ -439,17 +438,6 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 	if(first_reg_shift && second_reg_shift) {
 		error(first_reg_shift->line_number, "only one reg can be shifted");
 	}
-
-	/*if(first_reg_shift) {
-		//first_reg = mem_node->second_reg;
-		//second_reg = mem_node->first_reg;
-		reg_shift = first_reg_shift;
-	}
-	else {
-		reg_shift = second_reg_shift;
-	}*/
-
-	//print_error("%d ", reg_shift);
 
 	if(mem_node->bitness == 16) {
 		if(first_reg) {
@@ -631,91 +619,56 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 			out(3, (function << 3) | 6, offset->value, offset->value >> 8);
 		}
 	}
-	else if(mem_node->bitness == 32) {
+	else if(mem_node->bitness == 32 || mem_node->bitness == 0) {
 		if(first_reg) {
 			if(second_reg) {
-				if(first_reg_shift) {
-					error(first_reg_shift->line_number, "please shift second register");
+				if(second_reg_shift) {
+					error(second_reg_shift->line_number, "please shift first register");
 				}
 
 				if(offset) {
-					if(second_reg_shift) {
-						if((Signed_Number32)offset->value >= -128 && (Signed_Number32)offset->value < 128) {
-							if(second_reg->index == 4) { //ESP
-								//first_reg = mem_node->second_reg;
-								//second_reg = mem_node->first_reg;
-							
-								error(second_reg->line_number, "unsupported addressing");
-							}
+					if(first_reg_shift) {
+						if(first_reg->index == 4) { //ESP
+							error(first_reg->line_number, "unsupported addressing: can't shift ESP");
+						}
 
-							out(3, 0x04 | (function << 3) | (1 << 6), (second_reg_shift->value << 6) | (second_reg->index << 3) | first_reg->index, offset->value);
+						if((Signed_Number32)offset->value >= -128 && (Signed_Number32)offset->value < 128) {
+							out(3, 0x04 | (function << 3) | (1 << 6), (first_reg_shift->value << 6) | (first_reg->index << 3) | second_reg->index, offset->value);
 						}
 						else {
-							if(second_reg->index == 4) { //ESP
-								//first_reg = mem_node->second_reg;
-								//second_reg = mem_node->first_reg;
-
-								error(second_reg->line_number, "unsupported addressing");
-							}
-
-							out(2, 0x04 | (function << 3) | (1 << 6), (second_reg_shift->value << 6) | (second_reg->index << 3) | first_reg->index);
+							out(2, 0x04 | (function << 3) | (2 << 6), (first_reg_shift->value << 6) | (first_reg->index << 3) | second_reg->index);
 							out(4, offset->value, offset->value >> 8, offset->value >> 16, offset->value >> 24);
 						}
 					}
 					else {
-						if((Signed_Number32)offset->value >= -128 && (Signed_Number32)offset->value < 128) {
-							if(second_reg->index == 4) { //ESP
-								//first_reg = mem_node->second_reg;
-								//second_reg = mem_node->first_reg;
-							
-								error(second_reg->line_number, "unsupported addressing");
-							}
+						if(first_reg->index == 4) { //ESP
+							error(first_reg->line_number, "please move ESP to second place");
+						}
 
-							out(3, 0x04 | (function << 3) | (1 << 6), (second_reg->index << 3) | first_reg->index, offset->value);
+						if((Signed_Number32)offset->value >= -128 && (Signed_Number32)offset->value < 128) {
+							out(3, 0x04 | (function << 3) | (1 << 6), (first_reg->index << 3) | second_reg->index, offset->value);
 						}
 						else {
-							if(second_reg->index == 4) { //ESP
-								//first_reg = mem_node->second_reg;
-								//second_reg = mem_node->first_reg;
-
-								error(second_reg->line_number, "unsupported addressing");
-							}
-
-							out(2, 0x04 | (function << 3) | (1 << 6), (second_reg->index << 3) | first_reg->index);
+							out(2, 0x04 | (function << 3) | (2 << 6), (first_reg->index << 3) | second_reg->index);
 							out(4, offset->value, offset->value >> 8, offset->value >> 16, offset->value >> 24);
 						}
 					}
 				}
 				else {
-					if(second_reg_shift) {
-						if(second_reg->index == 4) { //ESP
-							//first_reg = mem_node->second_reg;
-							//second_reg = mem_node->first_reg;
-						
-							error(second_reg->line_number, "unsupported addressing");
+					if(first_reg_shift) {
+						if(first_reg->index == 4) { //ESP
+							error(second_reg->line_number, "unsupported addressing: can't shift ESP");
 						}
 
-						if(first_reg->index == 5) { //EBP
-							//first_reg = mem_node->second_reg;
-							//second_reg = mem_node->first_reg;
-						
-							//error(first_reg->line_number, "unsupported addressing");
-
-							out(3, 0x04 | (1 << 6) | (function << 3), (second_reg_shift->value << 6) | (second_reg->index << 3) | first_reg->index, 0);
-						}
-						else {
-							out(2, 0x04 | (function << 3), (second_reg_shift->value << 6) | (second_reg->index << 3) | first_reg->index);
-						}
+						out(2, 0x04 | (function << 3), (first_reg_shift->value << 6) | (first_reg->index << 3) | second_reg->index);
 					}
 					else {
-						if(second_reg->index == 4) { //ESP
-							//first_reg = mem_node->second_reg;
-							//second_reg = mem_node->first_reg;
-						
-							error(second_reg->line_number, "unsupported addressing");
+						if(second_reg->index == 5) { //EBP
+							out(2, 0x04 | (function << 3), (second_reg->index << 3) | first_reg->index);
 						}
-
-						out(2, 0x04 | (function << 3), (second_reg->index << 3) | first_reg->index);
+						else {
+							out(2, 0x04 | (function << 3), (first_reg->index << 3) | second_reg->index);
+						}
 					}
 				}
 			}
@@ -723,7 +676,7 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 				if(offset) {
 					if(first_reg_shift) {
 						if(first_reg->index == 4) { //ESP
-							error(first_reg->line_number, "unsupported addressing");
+							error(first_reg->line_number, "unsupported addressing: can't shift ESP");
 						}
 						
 						out(2, 0x04 + (function << 3), (first_reg_shift->value << 6) | (first_reg->index << 3) | 5);
@@ -743,15 +696,15 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 						}
 						else {
 							if(first_reg->index == 4) { //ESP
-								out(2, 0x04 | (1 << 6) | (function << 3), 0x20 | first_reg->index);
+								out(2, 0x04 | (2 << 6) | (function << 3), 0x20 | first_reg->index);
 								out(4, offset->value, offset->value >> 8, offset->value >> 16, offset->value >> 24);
 							}
 							else if(first_reg->index == 5) { //EBP
-								out(1, 0x05 | (1 << 6) | (function << 3));
+								out(1, 0x05 | (2 << 6) | (function << 3));
 								out(4, offset->value, offset->value >> 8, offset->value >> 16, offset->value >> 24);
 							}
 							else {
-								out(1, 0x00 | (1 << 6) | (function << 3) | first_reg->index);
+								out(1, 0x00 | (2 << 6) | (function << 3) | first_reg->index);
 								out(4, offset->value, offset->value >> 8, offset->value >> 16, offset->value >> 24);
 							}
 						}
@@ -760,7 +713,7 @@ void generate_mem(Mem_Node* mem_node, Byte function)
 				else {
 					if(first_reg_shift) {
 						if(first_reg->index == 4) { //ESP
-							error(first_reg->line_number, "unsupported addressing");
+							error(first_reg->line_number, "unsupported addressing: can't shift ESP");
 						}
 
 						out(2, 0x04 | (function << 3), (first_reg_shift->value << 6) | (first_reg->index << 3) | 5);
@@ -938,7 +891,7 @@ void generate(Dynamic_Stack* program)
 								Number_Node* right_operand = calculated_right_operand;
 
 								if(left_operand->index == 0) {
-									if(right_operand->value < 256) {
+									if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
 										out(4, 0x66, 0x83, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									}
 									else {
@@ -946,7 +899,7 @@ void generate(Dynamic_Stack* program)
 									}
 								}
 								else {
-									if(right_operand->value < 256) {
+									if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
 										out(4, 0x66, 0x83, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									}
 									else {
@@ -1000,7 +953,7 @@ void generate(Dynamic_Stack* program)
 								Number_Node* right_operand = calculated_right_operand;
 
 								if(left_operand->index == 0) {
-									if(right_operand->value < 256) {
+									if((Signed_Number32)right_operand->value >= -128 && (Signed_Number32)right_operand->value < 128) {
 										out(3, 0x83, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									}
 									else {
@@ -1009,7 +962,7 @@ void generate(Dynamic_Stack* program)
 									}
 								}
 								else {
-									if(right_operand->value < 256) {
+									if((Signed_Number32)right_operand->value >= -128 && (Signed_Number32)right_operand->value < 128) {
 										out(3, 0x83, (3 << 6) | (operation_index << 3) | left_operand->index, right_operand->value);
 									}
 									else {
@@ -1076,7 +1029,7 @@ void generate(Dynamic_Stack* program)
 									}
 
 									case 16: {
-										if(right_operand->value < 256) {
+										if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
 											generate_segment_prefix(left_operand);
 
 											if(left_operand->bitness == 16) {
@@ -1103,7 +1056,7 @@ void generate(Dynamic_Stack* program)
 									}
 
 									case 32: {
-										if(right_operand->value < 256) {
+										if((Signed_Number32)right_operand->value >= -128 && (Signed_Number32)right_operand->value < 128) {
 											generate_segment_prefix(left_operand);
 
 											if(left_operand->bitness == 16) {
@@ -1572,12 +1525,12 @@ void generate(Dynamic_Stack* program)
 
 						offset = operand->value - (current_address + 2);
 
-						if(offset > 127 || offset < -128) {
-							offset = operand->value - (current_address + 5);
-							out(5, 0xE9, offset, offset >> 8, offset >> 16, offset >> 24);
+						if(offset >= -128 && offset < 128) {
+							out(2, 0xEB, offset);
 						}
 						else {
-							out(2, 0xEB, offset);
+							offset = operand->value - (current_address + 5);
+							out(5, 0xE9, offset, offset >> 8, offset >> 16, offset >> 24);
 						}
 
 						break;
@@ -1711,7 +1664,7 @@ void generate(Dynamic_Stack* program)
 					case CALCULATED_NUMBER_TOKEN: {
 						Number_Node* operand = calculated_operand;
 
-						if(operand->value < 256) {
+						if((Signed_Number32)operand->value >= -128 && (Signed_Number32)operand->value < 128) {
 							out(2, 0x6A, operand->value);
 						}
 						else {
@@ -1870,7 +1823,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "pop with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -3009,49 +2962,65 @@ void generate(Dynamic_Stack* program)
 			}
 
 			case IMUL_TOKEN: {
-				Imul_Node* n = node;
+				Ternary_Operation_Node* n = node;
 
 				if(n->right_operand) {
 					Node* calculated_left_operand = calculate_expression(n->left_operand);
-					Node* calculated_destination_operand = calculate_expression(n->destination_operand);
+					Node* calculated_center_operand = calculate_expression(n->center_operand);
 					Node* calculated_right_operand = calculate_expression(n->right_operand);
-
-					if(calculated_destination_operand->token != MEM_TOKEN) {
-						error(n->left_operand->line_number, "not supported destination operand");
-					}
 
 					if(calculated_right_operand->token != NUMBER_TOKEN && calculated_right_operand->token != CALCULATED_NUMBER_TOKEN) {
 						error(n->left_operand->line_number, "not supported right operand");
 					}
 
-					Mem_Node* destination_operand = calculated_destination_operand;
 					Number_Node* right_operand = calculated_right_operand;
 
 					switch(calculated_left_operand->token) {
 						case REG16_TOKEN: {
 							Reg16_Node* left_operand = calculated_left_operand;
 
-							if(right_operand->value < 256) {
-								generate_segment_prefix(destination_operand);
+							switch(calculated_center_operand->token) {
+								case REG16_TOKEN: {
+									Reg16_Node* center_operand = calculated_center_operand;
 
-								if(destination_operand->bitness == 16) {
-									out(1, 0x67);
+									if((Signed_Number32)right_operand->value >= -128 && (Signed_Number32)right_operand->value < 128) {
+										out(4, 0x66, 0x6B, (3 << 6) | (left_operand->index << 3) | center_operand->index, right_operand->value);
+									}
+									else {
+										out(5, 0x66, 0x69, (3 << 6) | (left_operand->index << 3) | center_operand->index, right_operand->value, right_operand->value >> 8);
+									}
+
+									break;
 								}
 
-								out(2, 0x66, 0x6B);
-								generate_mem(destination_operand, left_operand->index);
-								out(1, right_operand->value);
-							}
-							else {
-								generate_segment_prefix(destination_operand);
+								case MEM_TOKEN: {
+									Mem_Node* center_operand = calculated_center_operand;
 
-								if(destination_operand->bitness == 16) {
-									out(1, 0x67);
+									if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
+										generate_segment_prefix(center_operand);
+
+										if(center_operand->bitness == 16) {
+											out(1, 0x67);
+										}
+
+										out(2, 0x66, 0x6B);
+										generate_mem(center_operand, left_operand->index);
+										out(1, right_operand->value);
+									}
+									else {
+										generate_segment_prefix(center_operand);
+
+										if(center_operand->bitness == 16) {
+											out(1, 0x67);
+										}
+
+										out(2, 0x66, 0x69);
+										generate_mem(center_operand, left_operand->index);
+										out(2, right_operand->value, right_operand->value >> 8);
+									}
+
+									break;
 								}
-								
-								out(2, 0x66, 0x69);
-								generate_mem(destination_operand, left_operand->index);
-								out(2, right_operand->value, right_operand->value >> 8);
 							}
 
 							break;
@@ -3060,27 +3029,48 @@ void generate(Dynamic_Stack* program)
 						case REG32_TOKEN: {
 							Reg32_Node* left_operand = calculated_left_operand;
 
-							if(right_operand->value < 256) {
-								generate_segment_prefix(destination_operand);
+							switch(calculated_center_operand->token) {
+								case REG32_TOKEN: {
+									Reg32_Node* center_operand = calculated_center_operand;
 
-								if(destination_operand->bitness == 16) {
-									out(1, 0x67);
+									if((Signed_Number32)right_operand->value >= -128 && (Signed_Number32)right_operand->value < 128) {
+										out(3, 0x6B, (3 << 6) | (left_operand->index << 3) | center_operand->index, right_operand->value);
+									}
+									else {
+										out(6, 0x69, (3 << 6) | (left_operand->index << 3) | center_operand->index, right_operand->value, right_operand->value >> 8, right_operand->value >> 16, right_operand->value >> 24);
+									}
+
+									break;
 								}
 
-								out(1, 0x6B);
-								generate_mem(destination_operand, left_operand->index);
-								out(1, right_operand->value);
-							}
-							else {
-								generate_segment_prefix(destination_operand);
+								case MEM_TOKEN: {
+									Mem_Node* center_operand = calculated_center_operand;
 
-								if(destination_operand->bitness == 16) {
-									out(1, 0x67);
+									if((Signed_Number16)right_operand->value >= -128 && (Signed_Number16)right_operand->value < 128) {
+										generate_segment_prefix(center_operand);
+
+										if(center_operand->bitness == 16) {
+											out(1, 0x67);
+										}
+
+										out(1, 0x6B);
+										generate_mem(center_operand, left_operand->index);
+										out(1, right_operand->value);
+									}
+									else {
+										generate_segment_prefix(center_operand);
+
+										if(center_operand->bitness == 16) {
+											out(1, 0x67);
+										}
+
+										out(1, 0x69);
+										generate_mem(center_operand, left_operand->index);
+										out(4, right_operand->value, right_operand->value >> 8, right_operand->value >> 16, right_operand->value >> 24);
+									}
+
+									break;
 								}
-
-								out(1, 0x69);
-								generate_mem(destination_operand, left_operand->index);
-								out(4, right_operand->value, right_operand->value >> 8, right_operand->value >> 16, right_operand->value >> 24);
 							}
 
 							break;
@@ -3095,40 +3085,40 @@ void generate(Dynamic_Stack* program)
 						free_memory(calculated_right_operand);
 					}
 				}
-				else if(n->destination_operand) {
+				else if(n->center_operand) {
 					Node* calculated_left_operand = calculate_expression(n->left_operand);
-					Node* calculated_destination_operand = calculate_expression(n->destination_operand);
+					Node* calculated_center_operand = calculate_expression(n->center_operand);
 
 					switch(calculated_left_operand->token) {
 						case REG16_TOKEN: {
 							Reg16_Node* left_operand = calculated_left_operand;
 
-							switch(calculated_destination_operand->token) {
+							switch(calculated_center_operand->token) {
 								case REG16_TOKEN: {
-									Reg16_Node* right_operand = calculated_destination_operand;
+									Reg16_Node* center_operand = calculated_center_operand;
 
-									out(4, 0x66, 0x0F, 0xAF, (3 << 6) | (left_operand->index << 3) | right_operand->index);
+									out(4, 0x66, 0x0F, 0xAF, (3 << 6) | (left_operand->index << 3) | center_operand->index);
 
 									break;
 								}
 
 								case MEM_TOKEN: {
-									Mem_Node* right_operand = calculated_destination_operand;
+									Mem_Node* center_operand = calculated_center_operand;
 
-									generate_segment_prefix(right_operand);
+									generate_segment_prefix(center_operand);
 
-									if(right_operand->bitness == 16) {
+									if(center_operand->bitness == 16) {
 										out(1, 0x67);
 									}
 									
 									out(3, 0x66, 0x0F, 0xAF);
-									generate_mem(right_operand, left_operand->index);
+									generate_mem(center_operand, left_operand->index);
 
 									break;
 								}
 
 								default: {
-									error(n->destination_operand->line_number, "not supported right operand");
+									error(n->center_operand->line_number, "not supported right operand");
 								}
 							}
 
@@ -3138,32 +3128,32 @@ void generate(Dynamic_Stack* program)
 						case REG32_TOKEN: {
 							Reg32_Node* left_operand = calculated_left_operand;
 
-							switch(calculated_destination_operand->token) {
+							switch(calculated_center_operand->token) {
 								case REG32_TOKEN: {
-									Reg32_Node* right_operand = calculated_destination_operand;
+									Reg32_Node* center_operand = calculated_center_operand;
 
-									out(3, 0x0F, 0xAF, (3 << 6) | (left_operand->index << 3) | right_operand->index);
+									out(3, 0x0F, 0xAF, (3 << 6) | (left_operand->index << 3) | center_operand->index);
 
 									break;
 								}
 
 								case MEM_TOKEN: {
-									Mem_Node* right_operand = calculated_destination_operand;
+									Mem_Node* center_operand = calculated_center_operand;
 
-									generate_segment_prefix(right_operand);
+									generate_segment_prefix(center_operand);
 
-									if(right_operand->bitness == 16) {
+									if(center_operand->bitness == 16) {
 										out(1, 0x67);
 									}
 									
 									out(2, 0x0F, 0xAF);
-									generate_mem(right_operand, left_operand->index);
+									generate_mem(center_operand, left_operand->index);
 
 									break;
 								}
 
 								default: {
-									error(n->destination_operand->line_number, "not supported right operand");
+									error(n->center_operand->line_number, "not supported right operand");
 								}
 							}
 
@@ -3704,7 +3694,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "retn with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -4115,7 +4105,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "retfn with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -4151,7 +4141,7 @@ void generate(Dynamic_Stack* program)
 					}
 
 					default: {
-						error(n->operand->line_number, "int with not supported operand");
+						error(n->operand->line_number, "not supported operand");
 					}
 				}
 
@@ -5622,7 +5612,6 @@ void generate(Dynamic_Stack* program)
 			case ORG_TOKEN: {
 				Unary_Operation_Node* n = node;
 				Node* calculated_operand = calculate_expression(n->operand);
-				Number operation_index = node->token - LOOPNZ_TOKEN;
 
 				switch(calculated_operand->token) {
 					case NUMBER_TOKEN:

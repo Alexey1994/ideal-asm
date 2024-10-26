@@ -4,6 +4,16 @@ imul AX, [EBX], 1
 imul EAX, [BX], 1
 imul EAX, [EBX], 1
 
+imul AX, BX, 1
+imul EAX, EBX, 1
+
+imul AX, [BX], 128
+imul AX, [EBX], 128
+imul EAX, [BX], 128
+imul EAX, [EBX], 128
+imul AX, BX, 128
+imul EAX, EBX, 128
+
 
 ;REG8
 imul AH
